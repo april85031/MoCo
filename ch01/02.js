@@ -1,0 +1,1 @@
+alert("hello wolrd! ch01/02js")

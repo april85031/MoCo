@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Fetch</title>
+</head>
+<body>
+<h1>Fetch 1207HW</h1>
+
+<button onclick="f_test()">fetch</button>
+
+<div class="json-output">
+    <h3>JSON 資料格式</h3>
+    <pre id="jsonOutput"></pre>
+</div>
+
+<script>
+    async function f_test() {
+
+        let url = 'https://api.github.com/repos/april85031/MoCo/commits';
+        let response = await fetch(url);
+        let commits = await response.json();
+
+        const jsonOutput = document.getElementById('jsonOutput');
+
+        if (!Array.isArray(commits) || commits.length === 0) {
+            jsonOutput.textContent = '沒有資料。';
+            return;
+        }
+
+        jsonOutput.textContent = JSON.stringify(commits[0], null, 2);
+
+     
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>POST 1214作業</title>
+</head>
+<body>
+
+<h1>POST 作業</h1>
+
+<form id="formElem">
+    姓名：<input type="text" name="name"><br><br>
+    年齡：<input type="number" name="age"><br><br>
+    <input type="submit" value="POST">
+</form>
+
+<pre id="output"></pre>
+
+<script>
+    const formElem = document.getElementById("formElem");
+
+    formElem.onsubmit = async (e) => {
+        e.preventDefault();
+
+        let response = await fetch('https://httpcan.org/post', {
+            method: 'POST',
+            body: new FormData(formElem)
+        });
+
+        let data = await response.json();
+
+        document.getElementById("output").textContent =
+            JSON.stringify(data, null, 2);
+    };
+</script>
+
+</body>
+</html>

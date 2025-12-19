@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>1214作業 get</title>
+</head>
+<body>
+
+<h1>1214 GET </h1>
+<button onclick="getData()">送出</button>
+
+<pre id="output"></pre>
+
+<script>
+    async function getData() {
+        let response = await fetch(
+            'https://httpcan.org/get?name=amy&age=22'
+        );
+
+        let data = await response.json();
+
+        document.getElementById("output").textContent =
+            JSON.stringify(data, null, 2);
+    }
+</script>
+
+</body>
+</html>

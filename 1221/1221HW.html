@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>啟用相機與麥克風</title>
+
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            background-color: #f4f6f8;
+            text-align: center;
+            padding-top: 40px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        #startBtn {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        #stopBtn {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        video {
+            display: block;
+            margin: 20px auto 0;
+            width: 320px;
+            border-radius: 8px;
+            background-color: #000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button id="startBtn">啟用相機與麥克風</button>
+    <button id="stopBtn">關閉</button>
+
+    <video id="video" autoplay playsinline></video>
+
+    <script>
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const video = document.getElementById('video');
+
+        let stream = null;
+
+        async function startMedia() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: true
+                });
+                video.srcObject = stream;
+            } catch (error) {
+                console.error(error);
+                alert('無法取得相機或麥克風權限');
+            }
+        }
+
+        function stopMedia() {
+            if (!stream) return;
+
+            stream.getTracks().forEach(track => track.stop());
+            video.srcObject = null;
+            stream = null;
+        }
+
+        startBtn.addEventListener('click', startMedia);
+        stopBtn.addEventListener('click', stopMedia);
+    </script>
+
+</body>
+</html>

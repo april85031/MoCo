@@ -75,9 +75,15 @@ function getInfo() {
     },
     function () {
       document.getElementById("output").textContent = "無法取得位置";
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
     }
   );
 }
+
 
 
 function makeText(mapUrl, battery) {

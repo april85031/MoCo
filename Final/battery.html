@@ -90,10 +90,10 @@ function makeText(mapUrl, battery, lat, lon) {
 
   if (battery === null) {
     shareText =
-      "我目前的位置：\n" +
-      mapUrl + "\n\n" +
-      "經緯度：" + lat + ", " + lon;
-      "電量狀態不予存取，不過跟您回報我目前很安全!"
+  "我目前的位置：\n" +
+  mapUrl + "\n\n" +
+  "經緯度：" + lat + ", " + lon + "\n" +
+  "電量狀態不予存取，不過跟您回報我目前很安全!";
     document.getElementById("output").textContent = shareText;
     return;
   }

@@ -51,14 +51,19 @@ pre {
 let shareText = "";
 
 function getInfo() {
-  // 取得定位
+
+  if (!navigator.geolocation) {
+    document.getElementById("output").textContent =
+      "此瀏覽器不支援定位功能";
+    return;
+  }
+
   navigator.geolocation.getCurrentPosition(
     function (pos) {
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
       const mapUrl = "https://www.google.com/maps?q=" + lat + "," + lon;
 
-      // 取得電量
       if (navigator.getBattery) {
         navigator.getBattery().then(function (battery) {
           const percent = Math.round(battery.level * 100);
@@ -73,6 +78,7 @@ function getInfo() {
     }
   );
 }
+
 
 function makeText(mapUrl, battery) {
   let note = "";

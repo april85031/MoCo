@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>位置與電量回報</title>
+
+<style>
+body {
+  font-family: "Microsoft JhengHei", sans-serif;
+  background: #f4f6f8;
+  text-align: center;
+  padding-top: 40px;
+}
+.box {
+  background: white;
+  width: 360px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 10px;
+}
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+}
+pre {
+  background: #eee;
+  padding: 10px;
+  border-radius: 6px;
+  text-align: left;
+  white-space: pre-wrap;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h3>📱 位置與電量回報</h3>
+
+  <button onclick="getInfo()">取得資訊</button>
+  <button onclick="copyText()">複製回報文字</button>
+
+  <pre id="output">尚未取得資料</pre>
+</div>
+
+<script>
+let shareText = "";
+
+function getInfo() {
+  // 取得定位
+  navigator.geolocation.getCurrentPosition(
+    function (pos) {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      const mapUrl = "https://www.google.com/maps?q=" + lat + "," + lon;
+
+      // 取得電量
+      if (navigator.getBattery) {
+        navigator.getBattery().then(function (battery) {
+          const percent = Math.round(battery.level * 100);
+          makeText(mapUrl, percent);
+        });
+      } else {
+        makeText(mapUrl, "未知");
+      }
+    },
+    function () {
+      document.getElementById("output").textContent = "無法取得位置";
+    }
+  );
+}
+
+function makeText(mapUrl, battery) {
+  let note = "";
+
+  if (battery >= 50) {
+    note = "電量充足，可以保持聯絡";
+  } else if (battery >= 20) {
+    note = "電量稍低，仍可正常通訊";
+  } else {
+    note = "電量焦慮了，但我人很安全，不用擔心";
+  }
+
+  shareText =
+    "📍 我目前的位置：\n" +
+    mapUrl + "\n\n" +
+    "🔋 電量剩餘：" + battery + "%\n" +
+    "備註：" + note;
+
+  document.getElementById("output").textContent = shareText;
+}
+
+function copyText() {
+  if (!shareText) {
+    alert("請先取得資訊");
+    return;
+  }
+  navigator.clipboard.writeText(shareText);
+  alert("已複製，可貼到 LINE");
+}
+</script>
+
+</body>
+</html>

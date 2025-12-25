@@ -25,6 +25,7 @@ button {
   background: #007bff;
   color: white;
   cursor: pointer;
+  margin: 4px;
 }
 pre {
   background: #eee;
@@ -32,6 +33,7 @@ pre {
   border-radius: 6px;
   text-align: left;
   white-space: pre-wrap;
+  word-break: break-all;
 }
 </style>
 </head>
@@ -39,9 +41,10 @@ pre {
 <body>
 
 <div class="box">
-  <h3>📱 位置與電量回報</h3>
+  <h3>位置與電量回報</h3>
 
   <button onclick="getInfo()">取得資訊</button>
+  <button onclick="shareToApp()">分享至應用程式</button>
   <button onclick="copyText()">複製回報文字</button>
 
   <pre id="output">尚未取得資料</pre>
@@ -51,12 +54,8 @@ pre {
 let shareText = "";
 
 function getInfo() {
-
-  if (!navigator.geolocation) {
-    document.getElementById("output").textContent =
-      "此瀏覽器不支援定位功能";
-    return;
-  }
+  document.getElementById("output").textContent =
+    "定位中，請允許定位權限";
 
   navigator.geolocation.getCurrentPosition(
     function (pos) {
@@ -67,14 +66,17 @@ function getInfo() {
       if (navigator.getBattery) {
         navigator.getBattery().then(function (battery) {
           const percent = Math.round(battery.level * 100);
-          makeText(mapUrl, percent);
+          makeText(mapUrl, percent, lat, lon);
+        }).catch(function () {
+          makeText(mapUrl, null, lat, lon);
         });
       } else {
-        makeText(mapUrl, "未知");
+        makeText(mapUrl, null, lat, lon);
       }
     },
     function () {
-      document.getElementById("output").textContent = "無法取得位置";
+      document.getElementById("output").textContent =
+        "無法取得位置，請確認已允許定位";
     },
     {
       enableHighAccuracy: true,
@@ -84,9 +86,18 @@ function getInfo() {
   );
 }
 
+function makeText(mapUrl, battery, lat, lon) {
 
+  if (battery === null) {
+    shareText =
+      "我目前的位置：\n" +
+      mapUrl + "\n\n" +
+      "經緯度：" + lat + ", " + lon;
 
-function makeText(mapUrl, battery) {
+    document.getElementById("output").textContent = shareText;
+    return;
+  }
+
   let note = "";
 
   if (battery >= 50) {
@@ -98,12 +109,28 @@ function makeText(mapUrl, battery) {
   }
 
   shareText =
-    "📍 我目前的位置：\n" +
+    "我目前的位置：\n" +
     mapUrl + "\n\n" +
-    "🔋 電量剩餘：" + battery + "%\n" +
+    "電量剩餘：" + battery + "%\n" +
     "備註：" + note;
 
   document.getElementById("output").textContent = shareText;
+}
+
+function shareToApp() {
+  if (!shareText) {
+    alert("請先取得資訊");
+    return;
+  }
+
+  if (navigator.share) {
+    navigator.share({
+      title: "位置回報",
+      text: shareText
+    });
+  } else {
+    copyText();
+  }
 }
 
 function copyText() {
@@ -112,7 +139,7 @@ function copyText() {
     return;
   }
   navigator.clipboard.writeText(shareText);
-  alert("已複製，可貼到 LINE");
+  alert("已複製");
 }
 </script>
 
